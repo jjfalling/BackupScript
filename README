@@ -7,5 +7,5 @@ backup_script.sh is the main backup program and pulls the backup information fro
 
 target_commands.sh contains the commands and other information used by the backup script. 
 
-check_backup_status.sh is a script that runs once a day on the backup server. backup_script puts a status file in /tmp/ of the source machine and pushes it to the backup server. The check_backup_script checks /backup*/*/tmp/backup_script_status and sends an email if a backup has not ran in 24 hours or ran in the future. This script assumes that your backups are put in to /backup* (ex. /backup1 /backup2) on the backup server. If you use this script, you should really use NTP so your machines have the right time.
+check_backup_status.sh is a script that runs once a day on the backup server. backup_script puts a status file in /tmp/ of the source machine and pushes it to the backup server. The check_backup_script checks /backup*/*/tmp/backup_script_status and sends an email if a backup has not ran in 24 hours or ran in the future. This script assumes that your backups are put in to /backup* (ex. /backup1 /backup2) on the backup server. If you use this script, you should really use NTP so your machines have the right time and don't give you bogus errors.
 
