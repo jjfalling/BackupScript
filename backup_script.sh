@@ -131,7 +131,7 @@ function check_rsync {
 	echo "" >> $backup_logfile
 	echo "" >> $backup_logfile
 
-	if [ "$status" != "0" ] &amp;&amp; [ "$status" != "24" ]; then
+	if [ "$status" != "0" ] && [ "$status" != "24" ]; then
 
 		failure="1"
 
