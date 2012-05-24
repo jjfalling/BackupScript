@@ -34,7 +34,6 @@ PATH=/sbin:/bin:/usr/sbin:/usr/bin:/usr/local/sbin:/usr/local/bin
 #############################################################################
 #First, lets define a few of things
 
-
 # ***CHANGE THE FOLLOWING***
 
 #The email to address to send an email address to incase of failure
@@ -49,10 +48,30 @@ logfile="/var/log/backup_status_check_log"
 
 #############################################################################
 
+#delete old log file, and create new one.
+rm $logfile
+touch $logfile
 
-#get date
-min_last_run=`date -v -1d +%Y%m%d`
-max_last_run=`date +%Y%m%d`
+
+unamestr=`uname`
+
+#check os, and use the correct date flags
+if [[ "$unamestr" == 'Linux' ]]; then
+	echo "Looks like OS is Linux" >> $logfile
+	min_last_run=`date --date="yesterday" +%Y%m%d`
+	max_last_run=`date +%Y%m%d`
+   
+elif [[ "$unamestr" == 'FreeBSD' ]]; then
+	echo "Looks like os is FreeBSD" >> $logfile
+	min_last_run=`date -v -1d +%Y%m%d`
+	max_last_run=`date +%Y%m%d`
+   
+else
+	echo "***Not an expected OS... Assuming Linux...***" >> $logfile
+	min_last_run=`date --date="yesterday" +%Y%m%d`
+	max_last_run=`date +%Y%m%d`
+   
+fi
 
 
 #this sends the email alert when something goes wrong
@@ -61,11 +80,6 @@ function send_alert {
 	echo "$error_message" | mail -s "Backup problem detected during verification on $systemname" "$erroremailaddr"
 
 }
-
-
-#delete old log file, and create new one.
-rm $logfile
-touch $logfile
 
 
 echo "Starting to check backup status" >> $logfile
@@ -96,12 +110,9 @@ do
 
 		if [ "$current_val" -ge "$min_last_run" ] && [ "$current_val" -le "$max_last_run" ]
 		then
-        
                 result="pass"
         
         else
-        
-        
                 result="fail"
                 final_result="fail"
         
@@ -110,12 +121,10 @@ do
 
         if [ "$current_val" -gt "$max_last_run" ]
         then
-        
                 future="true"
         
         fi
         
-
         echo $current_file >> $logfile
         echo $current_val >> $logfile
         echo $result >> $logfile
@@ -131,7 +140,6 @@ loginfo=`cat $logfile`
 
 if [ "$final_result" == "fail" ] &&  [ "$future" == "false" ]
 then
-
 		error_message="It seems one or more servers have not backed up in the last 24 hours. Please see $logfile"
 		send_alert
 
@@ -141,13 +149,11 @@ then
 
 elif [ "$future" == "true" ]
 then
-
 		error_message="It seems one or more servers have not backed up in the last 24 hours and atleast one of them is reporting a date in the future. Please  see $logfile"
 		send_alert
 		echo "Alert sent due to one or more server not backing up and one of them reporting time in the future" >> $logfile
 
 else
-
 		echo "" >> $logfile
 		echo "Everything seems fine..." >> $logfile
 
