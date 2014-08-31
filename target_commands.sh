@@ -2,7 +2,7 @@
 PATH=/sbin:/bin:/usr/sbin:/usr/bin:/usr/local/sbin:/usr/local/bin
 
 #############################################################################
-# check_backup_status.sh
+# target_commands.sh
 #
 # This file is included by the primary backup script and *must* be named 
 # target_commands.sh. Otherwise the primary script will be angry.
